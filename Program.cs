@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using HomesApi.Models;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +19,10 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+    var keyVaultEndpoint = new Uri(builder.Configuration["VaulyKey"]);
+    var secretClient = new SecretClient(keyVaultEndpoint, new DefaultAzureCredential());
+
+    connection = secretClient.GetSecret("AZURE-SQL-CONNECTION-STRING").ToString();
 }
 
 builder.Services.AddDbContext<HomesDbContext>(options =>

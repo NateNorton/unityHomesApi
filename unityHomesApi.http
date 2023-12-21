@@ -1,0 +1,6 @@
+@unityHomesApi_HostAddress = http://localhost:5177
+
+GET {{unityHomesApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using HomesApi.Models;
-using Azure.Security.KeyVault.Secrets;
-using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,16 +12,16 @@ builder.Services.AddSwaggerGen();
 var connection = String.Empty;
 if (builder.Environment.IsDevelopment())
 {
-    builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
-    connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+    // builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
+    connection = builder.Configuration.GetConnectionString("LocalDB");
 }
 else
 {
-    connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+    connection = builder.Configuration.GetConnectionString("LocalDB");
 }
 
 builder.Services.AddDbContext<HomesDbContext>(options =>
-    options.UseSqlServer(connection));
+    options.UseNpgsql(connection));
 
 
 var app = builder.Build();
@@ -31,11 +29,11 @@ var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-app.UseSwagger();
-app.UseSwaggerUI();
-// }
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 

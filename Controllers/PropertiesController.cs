@@ -20,11 +20,29 @@ namespace unityHomesApi.Controllers
             _context = context;
         }
 
+        // Return all properties that are available
         // GET: api/Properties
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Property>>> GetProperties()
+        public async Task<ActionResult<IEnumerable<Property>>> GetProperties([FromQuery] string location = null)
         {
-            return await _context.Properties.ToListAsync();
+            var query = _context.Properties.AsQueryable();
+
+            query = query.Where(p => p.IsAvailable == true);
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                // a string was passed in the query, search by this string
+                query = query.Where(p => p.Postcode.Equals(location)
+                || p.City.Equals(location)
+                || p.Street.Equals(location));
+
+                return await query.ToListAsync();
+            }
+            else
+            {
+                return await query.ToListAsync();
+            }
+
         }
 
         // GET: api/Properties/5

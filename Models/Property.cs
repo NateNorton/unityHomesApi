@@ -10,6 +10,10 @@ namespace HomesApi.Models
     public bool HasGarden { get; set; } = false;
     public int SquareMeeterage { get; set; }
     public int MonthlyRent { get; set; }
+    public string? Postcode { get; set; }
+    public string? City { get; set; }
+    public int PropertyNumber { get; set; }
+    public string? Street { get; set; }
     public DateTimeOffset DateAdded { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset DateUpdated { get; set; } = DateTimeOffset.UtcNow;
 

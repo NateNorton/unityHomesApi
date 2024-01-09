@@ -16,6 +16,10 @@ public static class SeedData
           HasGarden = true,
           SquareMeeterage = 100,
           MonthlyRent = 300,
+          Postcode = "AB12 3CD",
+          City = "City 1",
+          PropertyNumber = 1,
+          Street = "Road 1"
         },
         new Property
         {
@@ -27,6 +31,10 @@ public static class SeedData
           HasGarden = false,
           SquareMeeterage = 50,
           MonthlyRent = 200,
+          Postcode = "BC34 5DE",
+          City = "City 3",
+          PropertyNumber = 2,
+          Street = "Road 2"
         },
         new Property
         {
@@ -38,6 +46,10 @@ public static class SeedData
           HasGarden = true,
           SquareMeeterage = 185,
           MonthlyRent = 600,
+          Postcode = "XY98 7ZW",
+          City = "City 3",
+          PropertyNumber = 3,
+          Street = "Road 3"
         }
     );
   }

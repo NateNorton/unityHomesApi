@@ -12,11 +12,12 @@ namespace HomesApi.Models
     public int MonthlyRent { get; set; }
     public string? Postcode { get; set; }
     public string? City { get; set; }
-    public int PropertyNumber { get; set; }
+    public int? PropertyNumber { get; set; }
     public string? Street { get; set; }
+    public int PropertyTypeId { get; set; }
+    public PropertyType? PropertyType { get; set; }
     public DateTimeOffset DateAdded { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset DateUpdated { get; set; } = DateTimeOffset.UtcNow;
-
   }
 }
 

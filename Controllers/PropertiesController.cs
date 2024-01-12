@@ -32,7 +32,7 @@ namespace unityHomesApi.Controllers
             if (!string.IsNullOrEmpty(location))
             {
                 // a string was passed in the query, search by this string
-                query = query.Where(p => p.Postcode.Equals(location)
+                query = query.Where(p => p.Postcode.Contains(location)
                 || p.City.Equals(location)
                 || p.Street.Equals(location));
 

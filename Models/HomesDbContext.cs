@@ -10,6 +10,7 @@ namespace HomesApi.Models
 
     public DbSet<Property> Properties { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<PropertyType> PropertyTypes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -24,7 +24,7 @@ namespace unityHomesApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PropertyType>>> GetPropertyTypes()
         {
-            return await _context.PropertyTypes.ToListAsync();
+            return await _context.PropertyTypes.OrderBy(t => t.Name).ToListAsync();
         }
 
         // GET: api/PropertyTypes/5
@@ -42,7 +42,6 @@ namespace unityHomesApi.Controllers
         }
 
         // PUT: api/PropertyTypes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPropertyType(int id, PropertyType propertyType)
         {
@@ -73,7 +72,6 @@ namespace unityHomesApi.Controllers
         }
 
         // POST: api/PropertyTypes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<PropertyType>> PostPropertyType(PropertyType propertyType)
         {

@@ -1,5 +1,7 @@
-using Microsoft.EntityFrameworkCore;
+using HomesApi.Data;
+using HomesApi.Data.Repositories;
 using HomesApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,15 +12,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add CORS services
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins", builder =>
+builder
+    .Services
+    .AddCors(options =>
     {
-        builder.AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader();
+        options.AddPolicy(
+            "AllowAllOrigins",
+            builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }
+        );
     });
-});
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var connection = String.Empty;
 if (builder.Environment.IsDevelopment())
@@ -31,13 +38,9 @@ else
     connection = builder.Configuration.GetConnectionString("LocalDB");
 }
 
-builder.Services.AddDbContext<HomesDbContext>(options =>
-    options.UseNpgsql(connection));
-
+builder.Services.AddDbContext<HomesDbContext>(options => options.UseNpgsql(connection));
 
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

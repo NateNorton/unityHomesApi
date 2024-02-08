@@ -1,5 +1,6 @@
 using HomesApi.Data;
 using HomesApi.Data.Repositories;
+using HomesApi.Helpers;
 using HomesApi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,7 @@ builder
     });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthHelper, AuthHelper>();
 
 var connection = String.Empty;
 if (builder.Environment.IsDevelopment())

@@ -7,7 +7,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace HomesApi.Helpers;
 
-public class AuthHelper
+public interface IAuthHelper
+{
+    byte[] CreatePasswordSalt();
+    byte[] GetPasswordHash(string password, byte[] passwordSalt);
+    string CreateToken(long userId, string email);
+}
+
+public class AuthHelper : IAuthHelper
 {
     private readonly IConfiguration _config;
 

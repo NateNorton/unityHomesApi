@@ -15,12 +15,16 @@ namespace HomesApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
-    private readonly AuthHelper _authHelper;
+    private readonly IAuthHelper _authHelper;
 
-    public AuthController(IConfiguration config, IUserRepository userRepository)
+    public AuthController(
+        IConfiguration config,
+        IUserRepository userRepository,
+        IAuthHelper authHelper
+    )
     {
         _userRepository = userRepository;
-        _authHelper = new AuthHelper(config);
+        _authHelper = authHelper;
     }
 
     [AllowAnonymous]
@@ -75,6 +79,11 @@ public class AuthController : ControllerBase
             userToLogin.Email
         );
 
+        if (userForConfirmation == null)
+        {
+            return Unauthorized("Invalid email or password");
+        }
+
         byte[] passwordHash = _authHelper.GetPasswordHash(
             userToLogin.Password,
             userForConfirmation.PasswordSalt
@@ -85,11 +94,16 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid email or password");
         }
 
-        long userId = _userRepository.GetUserIdFromEmail(userToLogin.Email);
-
-        string token = _authHelper.CreateToken(userId, userToLogin.Email);
-
-        return Ok(new Dictionary<string, string> { { "token", token } });
+        try
+        {
+            long userId = _userRepository.GetUserIdFromEmail(userToLogin.Email);
+            string token = _authHelper.CreateToken(userId, userToLogin.Email);
+            return Ok(new Dictionary<string, string> { { "token", token } });
+        }
+        catch (Exception e)
+        {
+            return Unauthorized(e.Message);
+        }
     }
 
     [HttpGet("RefreshToken")]

@@ -117,13 +117,20 @@ public class AuthController : ControllerBase
                 "Problem with access token"
             );
         }
-        long userId = _userRepository.GetUserIdFromEmail(userEmail);
+        try
+        {
+            long userId = _userRepository.GetUserIdFromEmail(userEmail);
 
-        return Ok(
-            new Dictionary<string, string>
-            {
-                { "token", _authHelper.CreateToken(userId, userEmail) }
-            }
-        );
+            return Ok(
+                new Dictionary<string, string>
+                {
+                    { "token", _authHelper.CreateToken(userId, userEmail) }
+                }
+            );
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        }
     }
 }

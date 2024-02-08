@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using HomesApi.Data;
+using HomesApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HomesApi.Models;
 
 namespace unityHomesApi.Controllers
 {
@@ -20,11 +16,33 @@ namespace unityHomesApi.Controllers
             _context = context;
         }
 
+        // Return all properties that are available
         // GET: api/Properties
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Property>>> GetProperties()
+        public async Task<ActionResult<IEnumerable<Property>>> GetProperties(
+            [FromQuery] string location = null
+        )
         {
-            return await _context.Properties.ToListAsync();
+            var query = _context.Properties.AsQueryable();
+
+            query = query.Where(p => p.IsAvailable == true);
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                // a string was passed in the query, search by this string
+                query = query.Where(
+                    p =>
+                        p.Postcode.Contains(location)
+                        || p.City.Equals(location)
+                        || p.Street.Equals(location)
+                );
+
+                return await query.ToListAsync();
+            }
+            else
+            {
+                return await query.ToListAsync();
+            }
         }
 
         // GET: api/Properties/5
@@ -42,7 +60,6 @@ namespace unityHomesApi.Controllers
         }
 
         // PUT: api/Properties/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProperty(long id, Property @property)
         {
@@ -73,10 +90,10 @@ namespace unityHomesApi.Controllers
         }
 
         // POST: api/Properties
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Property>> PostProperty(Property @property)
         {
+            Console.WriteLine(@property);
             _context.Properties.Add(@property);
             await _context.SaveChangesAsync();
 

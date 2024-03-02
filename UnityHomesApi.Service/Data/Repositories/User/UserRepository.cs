@@ -29,18 +29,6 @@ public class UserRepository : IUserRepository
         return true;
     }
 
-    public bool SaveChanges()
-    {
-        return _context.SaveChanges() > 0;
-    }
-
-    public void AddEntity<T>(T entity)
-    {
-        System.Console.WriteLine("Getting here");
-        if (entity != null)
-            _context.Add(entity);
-    }
-
     public UserLoginConfirmationDto GetUserAuth(string email)
     {
         var userAuth = _context.UserAuths.FirstOrDefault(u => u.Email == email);

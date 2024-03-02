@@ -12,14 +12,14 @@ public class AuthControllerTests
 {
     private readonly AuthController _authController;
     private readonly IUserRepository _userRepository = Substitute.For<IUserRepository>();
+    private readonly IGeneralRepository _generalRepository = Substitute.For<IGeneralRepository>();
     private readonly IConfiguration _config = Substitute.For<IConfiguration>();
     private readonly IAuthHelper _authHelper = Substitute.For<IAuthHelper>();
     private readonly UserRegistrationDto _userToRegisterCorrect;
-    private readonly UserLoginDto _userToLoginCorrect;
 
     public AuthControllerTests()
     {
-        _authController = new AuthController(_config, _userRepository, _authHelper);
+        _authController = new AuthController(_userRepository, _generalRepository, _authHelper);
         _userToRegisterCorrect = new UserRegistrationDto
         {
             UserName = "testUser",
@@ -27,8 +27,6 @@ public class AuthControllerTests
             Password = "password",
             ConfirmPassword = "password"
         };
-
-        _userToLoginCorrect = new UserLoginDto { Email = "test@email.com", Password = "password" };
     }
 
     [Fact]
@@ -60,7 +58,7 @@ public class AuthControllerTests
     public void Register_FailedToSaveUser_ReturnsInternalServerError()
     {
         _userRepository.UserExistsFromEmail(Arg.Any<string>()).Returns(false);
-        _userRepository.SaveChanges().Returns(false);
+        _generalRepository.SaveChanges().Returns(false);
 
         var result = _authController.Register(_userToRegisterCorrect);
 
@@ -72,7 +70,7 @@ public class AuthControllerTests
     public void Register_Successful_ReturnsOK()
     {
         _userRepository.UserExistsFromEmail(Arg.Any<string>()).Returns(false);
-        _userRepository.SaveChanges().Returns(true);
+        _generalRepository.SaveChanges().Returns(true);
 
         var result = _authController.Register(_userToRegisterCorrect);
 

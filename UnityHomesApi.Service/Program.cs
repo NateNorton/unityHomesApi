@@ -28,6 +28,8 @@ builder
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthHelper, AuthHelper>();
+builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
+builder.Services.AddScoped<IGeneralRepository, GeneralRepository>();
 
 var connection = String.Empty;
 if (builder.Environment.IsDevelopment())

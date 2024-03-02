@@ -1,4 +1,3 @@
-using HomesApi.Data;
 using HomesApi.Data.Repositories;
 using HomesApi.Dots;
 using HomesApi.Dtos;
@@ -6,7 +5,6 @@ using HomesApi.Helpers;
 using HomesApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace HomesApi.Controllers;
 
@@ -15,15 +13,17 @@ namespace HomesApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
+    private readonly IGeneralRepository _generalRepository;
     private readonly IAuthHelper _authHelper;
 
     public AuthController(
-        IConfiguration config,
         IUserRepository userRepository,
+        IGeneralRepository generalRepository,
         IAuthHelper authHelper
     )
     {
         _userRepository = userRepository;
+        _generalRepository = generalRepository;
         _authHelper = authHelper;
     }
 
@@ -60,10 +60,10 @@ public class AuthController : ControllerBase
             LastName = userToRegister.LastName
         };
 
-        _userRepository.AddEntity<UserAuth>(userAuth);
-        _userRepository.AddEntity<User>(newUser);
+        _generalRepository.AddEntity<UserAuth>(userAuth);
+        _generalRepository.AddEntity<User>(newUser);
 
-        if (!_userRepository.SaveChanges())
+        if (!_generalRepository.SaveChanges())
         {
             return StatusCode(StatusCodes.Status500InternalServerError, "Failed to save user");
         }

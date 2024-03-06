@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomesApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase

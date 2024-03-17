@@ -1,8 +1,11 @@
+using System.Text;
 using HomesApi.Data;
 using HomesApi.Data.Repositories;
 using HomesApi.Helpers;
 using HomesApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +34,23 @@ builder.Services.AddScoped<IAuthHelper, AuthHelper>();
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IGeneralRepository, GeneralRepository>();
 
+string? tokenKeyString = builder.Configuration.GetSection("Appsettings:TokenKey").Value;
+builder
+    .Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(tokenKeyString != null ? tokenKeyString : "")
+            ),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
 var connection = String.Empty;
 if (builder.Environment.IsDevelopment())
 {
@@ -58,6 +78,8 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.MapControllers();
 

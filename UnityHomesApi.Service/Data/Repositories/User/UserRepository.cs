@@ -54,4 +54,14 @@ public class UserRepository : IUserRepository
         }
         return user.Id;
     }
+
+    public string GetUsernameFromEmail(string email)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Email == email);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+        return user.UserName;
+    }
 }

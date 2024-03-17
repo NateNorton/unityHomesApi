@@ -18,4 +18,6 @@ public class Property
     public PropertyType? PropertyType { get; set; }
     public DateTimeOffset DateAdded { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset DateUpdated { get; set; } = DateTimeOffset.UtcNow;
+    public long UserId { get; set; }
+    public User? User { get; set; }
 }

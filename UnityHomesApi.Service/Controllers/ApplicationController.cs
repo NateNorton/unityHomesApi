@@ -1,103 +1,103 @@
 using HomesApi.Data;
 using HomesApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace unityHomesApi.Controllers
+namespace unityHomesApi.Controllers;
+
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class ApplicationController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ApplicationController : ControllerBase
+    private readonly HomesDbContext _context;
+
+    public ApplicationController(HomesDbContext context)
     {
-        private readonly HomesDbContext _context;
+        _context = context;
+    }
 
-        public ApplicationController(HomesDbContext context)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Application>>> GetApplications()
+    {
+        return await _context.Applications.ToListAsync();
+    }
+
+    // GET: api/Application/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Application>> GetApplication(long id)
+    {
+        var application = await _context.Applications.FindAsync(id);
+
+        if (application == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        // GET: api/Application
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Application>>> GetApplications()
+        return application;
+    }
+
+    // PUT: api/Application/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutApplication(long id, Application application)
+    {
+        if (id != application.Id)
         {
-            return await _context.Applications.ToListAsync();
+            return BadRequest();
         }
 
-        // GET: api/Application/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Application>> GetApplication(long id)
-        {
-            var application = await _context.Applications.FindAsync(id);
+        _context.Entry(application).State = EntityState.Modified;
 
-            if (application == null)
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ApplicationExists(id))
             {
                 return NotFound();
             }
-
-            return application;
-        }
-
-        // PUT: api/Application/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutApplication(long id, Application application)
-        {
-            if (id != application.Id)
+            else
             {
-                return BadRequest();
+                throw;
             }
-
-            _context.Entry(application).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ApplicationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
-        // POST: api/Application
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Application>> PostApplication(Application application)
+        return NoContent();
+    }
+
+    // POST: api/Application
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost]
+    public async Task<ActionResult<Application>> PostApplication(Application application)
+    {
+        _context.Applications.Add(application);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction("GetApplication", new { id = application.Id }, application);
+    }
+
+    // DELETE: api/Application/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteApplication(long id)
+    {
+        var application = await _context.Applications.FindAsync(id);
+        if (application == null)
         {
-            _context.Applications.Add(application);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetApplication", new { id = application.Id }, application);
+            return NotFound();
         }
 
-        // DELETE: api/Application/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteApplication(long id)
-        {
-            var application = await _context.Applications.FindAsync(id);
-            if (application == null)
-            {
-                return NotFound();
-            }
+        _context.Applications.Remove(application);
+        await _context.SaveChangesAsync();
 
-            _context.Applications.Remove(application);
-            await _context.SaveChangesAsync();
+        return NoContent();
+    }
 
-            return NoContent();
-        }
-
-        private bool ApplicationExists(long id)
-        {
-            return _context.Applications.Any(e => e.Id == id);
-        }
+    private bool ApplicationExists(long id)
+    {
+        return _context.Applications.Any(e => e.Id == id);
     }
 }

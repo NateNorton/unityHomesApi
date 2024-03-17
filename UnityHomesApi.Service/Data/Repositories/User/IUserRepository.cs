@@ -9,4 +9,6 @@ public interface IUserRepository
     bool UserExistsFromEmail(string Email);
     UserLoginConfirmationDto GetUserAuth(string email);
     long GetUserIdFromEmail(string email);
+
+    string GetUsernameFromEmail(string email);
 }

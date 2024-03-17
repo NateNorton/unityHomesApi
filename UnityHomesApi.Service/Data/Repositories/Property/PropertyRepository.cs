@@ -1,5 +1,6 @@
 using HomesApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace HomesApi.Data.Repositories;
 
@@ -12,9 +13,16 @@ public class PropertyRepository : IPropertyRepository
         _context = context;
     }
 
-    public Task<Property> AddPropertyAsync(Property property)
+    public async Task<Property> AddProperty(Property property)
     {
-        throw new NotImplementedException();
+        if (property == null)
+        {
+            throw new ArgumentNullException(nameof(property));
+        }
+
+        _context.Properties.Add(property);
+        await _context.SaveChangesAsync();
+        return property;
     }
 
     public Task DeletePropertyAsync(long id)
@@ -22,27 +30,24 @@ public class PropertyRepository : IPropertyRepository
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Property>> GetAllPropertiesAsync()
+    public IQueryable<Property> GetAllProperties()
     {
         var query = _context.Properties.AsQueryable();
-        return await query.ToListAsync();
+        return query;
     }
 
-    public async Task<IEnumerable<Property>> GetPropertiesByLocationAsync(string location)
+    public IQueryable<Property> GetPropertiesByLocation(string location)
     {
         IQueryable<Property> query = _context.Properties.Where(p => p.IsAvailable);
 
-        if (!string.IsNullOrEmpty(location))
-        {
-            query = query.Where(
-                p =>
-                    p.Postcode.Contains(location)
-                    || p.City.Equals(location)
-                    || p.Street.Equals(location)
-            );
-        }
+        query = query.Where(
+            p =>
+                p.Postcode.Contains(location)
+                || p.City.Equals(location)
+                || p.Street.Equals(location)
+        );
 
-        return await query.ToListAsync();
+        return query;
     }
 
     public Task<Property> GetPropertyByIdAsync(long id)

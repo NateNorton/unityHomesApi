@@ -30,6 +30,9 @@ public class AuthController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Register(UserRegistrationDto userToRegister)
     {
         // If passwords do not match immediately return bad request
@@ -98,7 +101,8 @@ public class AuthController : ControllerBase
         try
         {
             long userId = _userRepository.GetUserIdFromEmail(userToLogin.Email);
-            string token = _authHelper.CreateToken(userId, userToLogin.Email);
+            string username = _userRepository.GetUsernameFromEmail(userToLogin.Email);
+            string token = _authHelper.CreateToken(userId, userToLogin.Email, username);
             return Ok(new Dictionary<string, string> { { "token", token } });
         }
         catch (Exception e)
@@ -121,11 +125,12 @@ public class AuthController : ControllerBase
         try
         {
             long userId = _userRepository.GetUserIdFromEmail(userEmail);
+            string username = _userRepository.GetUsernameFromEmail(userEmail);
 
             return Ok(
                 new Dictionary<string, string>
                 {
-                    { "token", _authHelper.CreateToken(userId, userEmail) }
+                    { "token", _authHelper.CreateToken(userId, userEmail, username) }
                 }
             );
         }

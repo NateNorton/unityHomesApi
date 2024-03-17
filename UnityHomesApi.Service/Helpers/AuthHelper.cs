@@ -11,7 +11,7 @@ public interface IAuthHelper
 {
     byte[] CreatePasswordSalt();
     byte[] GetPasswordHash(string password, byte[] passwordSalt);
-    string CreateToken(long userId, string email);
+    string CreateToken(long userId, string email, string username);
 }
 
 public class AuthHelper : IAuthHelper
@@ -50,12 +50,13 @@ public class AuthHelper : IAuthHelper
         );
     }
 
-    public string CreateToken(long userId, string email)
+    public string CreateToken(long userId, string email, string username)
     {
         Claim[] claims = new[]
         {
             new Claim("userID", userId.ToString()),
-            new Claim("email", email)
+            new Claim("email", email),
+            new Claim("username", username)
         };
 
         string? tokenKeyString = _config.GetSection("AppSettings:TokenKey").Value;

@@ -85,13 +85,13 @@ public class PropertiesController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!PropertyExists(id))
+            if (!_propertyRepository.PropertyExists(id))
             {
                 return NotFound();
             }
             else
             {
-                throw;
+                throw;d
             }
         }
 
@@ -126,20 +126,20 @@ public class PropertiesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProperty(long id)
     {
-        var @property = await _context.Properties.FindAsync(id);
-        if (@property == null)
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!long.TryParse(userIdString, out long userId))
         {
-            return NotFound();
+            return BadRequest("Invalid user id");
         }
 
-        _context.Properties.Remove(@property);
-        await _context.SaveChangesAsync();
+        var success = await _propertyRepository.DeletePropertyAsync(id, userId);
 
-        return NoContent();
-    }
+        if (!success)
+        {
+            return NotFound("Property not found or you are not the owner");
+        }
 
-    private bool PropertyExists(long id)
-    {
-        return _context.Properties.Any(e => e.Id == id);
+        return Ok("Property deleted");
     }
 }

@@ -9,6 +9,6 @@ public interface IPropertyRepository
     Task<Property> GetPropertyByIdAsync(long id);
     Task<Property> AddProperty(Property property);
     Task UpdatePropertyAsync(Property property);
-    Task DeletePropertyAsync(long id);
-    Task<bool> PropertyExistsAsync(long id);
+    Task<bool> DeletePropertyAsync(long id, long userId);
+    bool PropertyExists(long id);
 }

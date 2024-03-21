@@ -25,9 +25,21 @@ public class PropertyRepository : IPropertyRepository
         return property;
     }
 
-    public Task DeletePropertyAsync(long id)
+    public async Task<bool> DeletePropertyAsync(long id, long userId)
     {
-        throw new NotImplementedException();
+        var property = await _context
+            .Properties
+            .FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+
+        if (property == null)
+        {
+            return false;
+        }
+
+        _context.Properties.Remove(property);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     public IQueryable<Property> GetAllProperties()
@@ -55,9 +67,9 @@ public class PropertyRepository : IPropertyRepository
         throw new NotImplementedException();
     }
 
-    public Task<bool> PropertyExistsAsync(long id)
+    public bool PropertyExists(long id)
     {
-        throw new NotImplementedException();
+        return _context.Properties.Any(e => e.Id == id);
     }
 
     public Task UpdatePropertyAsync(Property property)

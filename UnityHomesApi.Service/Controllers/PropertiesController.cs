@@ -1,28 +1,23 @@
 using System.Security.Claims;
-using HomesApi.Data;
 using HomesApi.Data.Repositories;
 using HomesApi.Dtos;
 using HomesApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class PropertiesController : ControllerBase
 {
-    private readonly HomesDbContext _context;
     private readonly IPropertyRepository _propertyRepository;
     private readonly IUserRepository _userRepository;
 
     public PropertiesController(
-        HomesDbContext context,
         IPropertyRepository propertyRepository,
         IUserRepository userRepository
     )
     {
-        _context = context;
         _propertyRepository = propertyRepository;
         _userRepository = userRepository;
     }
@@ -124,7 +119,6 @@ public class PropertiesController : ControllerBase
         }
     }
 
-    // DELETE: api/Properties/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProperty(long id)
     {

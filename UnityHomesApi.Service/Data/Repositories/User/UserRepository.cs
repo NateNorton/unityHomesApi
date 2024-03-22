@@ -1,4 +1,4 @@
-using HomesApi.Dots;
+using HomesApi.Dtos;
 using HomesApi.Models;
 
 namespace HomesApi.Data.Repositories;

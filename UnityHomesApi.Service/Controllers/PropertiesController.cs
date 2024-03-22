@@ -26,7 +26,7 @@ public class PropertiesController : ControllerBase
     // GET: api/Properties
     [AllowAnonymous]
     [HttpGet]
-    public ActionResult<IEnumerable<Property>> GetProperties([FromQuery] string location = null)
+    public ActionResult<IEnumerable<Property>> GetProperties([FromQuery] string? location = null)
     {
         if (!string.IsNullOrEmpty(location))
         {

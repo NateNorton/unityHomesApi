@@ -1,5 +1,4 @@
 using HomesApi.Data.Repositories;
-using HomesApi.Dots;
 using HomesApi.Dtos;
 using HomesApi.Helpers;
 using HomesApi.Models;

@@ -32,6 +32,20 @@ namespace HomesApi.Data
             modelBuilder.Entity<User>().Property(u => u.Email).HasMaxLength(100).IsRequired();
 
             modelBuilder.Entity<User>().Property(u => u.PhoneNumber).HasMaxLength(20);
+
+            modelBuilder
+                .Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany()
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Message>()
+                .HasOne(m => m.Receiver)
+                .WithMany()
+                .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -33,6 +33,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthHelper, AuthHelper>();
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IGeneralRepository, GeneralRepository>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 
 string? tokenKeyString = builder.Configuration.GetSection("Appsettings:TokenKey").Value;
 builder

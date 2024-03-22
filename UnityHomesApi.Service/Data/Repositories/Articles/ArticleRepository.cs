@@ -69,9 +69,9 @@ public class ArticleRepository : IArticleRepository
             await _context.SaveChangesAsync();
             return true;
         }
-        catch (System.Exception)
+        catch (Exception)
         {
-            return false;
+            throw new Exception("An error occured while attempting to delete the article.");
         }
     }
 

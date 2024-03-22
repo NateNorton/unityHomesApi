@@ -1,33 +1,50 @@
+using HomesApi.Data;
+using HomesApi.Data.Repositories;
+using HomesApi.Dtos;
+using HomesApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HomesApi.Data;
-using HomesApi.Models;
 
 namespace unityHomesApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ArticleController : ControllerBase
     {
-        private readonly HomesDbContext _context;
+        private readonly IUserRepository _userRepository;
+        private readonly IArticleRepository _articleRepository;
 
-        public ArticleController(HomesDbContext context)
+        public ArticleController(
+            IUserRepository userRepository,
+            IArticleRepository articleRepository,
+            HomesDbContext context
+        )
         {
-            _context = context;
+            _userRepository = userRepository;
+            _articleRepository = articleRepository;
         }
 
-        // GET: api/Article
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Article>>> GetArticles()
         {
-            return await _context.Articles.ToListAsync();
+            var articles = await _articleRepository.GetAllArticles().ToListAsync();
+
+            if (articles == null)
+            {
+                return NotFound();
+            }
+
+            return articles;
         }
 
-        // GET: api/Article/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Article>> GetArticle(long id)
         {
-            var article = await _context.Articles.FindAsync(id);
+            var article = await _articleRepository.GetArticleByIdAsync(id);
 
             if (article == null)
             {
@@ -37,67 +54,45 @@ namespace unityHomesApi.Controllers
             return article;
         }
 
-        // PUT: api/Article/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArticle(long id, Article article)
+        public async Task<IActionResult> PutArticle(long id, ArticleUpdateDto article)
         {
-            if (id != article.Id)
-            {
-                return BadRequest();
-            }
+            var updated = await _articleRepository.UpdateArticleAsync(id, article);
 
-            _context.Entry(article).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ArticleExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Article
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Article>> PostArticle(Article article)
-        {
-            _context.Articles.Add(article);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetArticle", new { id = article.Id }, article);
-        }
-
-        // DELETE: api/Article/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteArticle(long id)
-        {
-            var article = await _context.Articles.FindAsync(id);
-            if (article == null)
+            if (!updated)
             {
                 return NotFound();
             }
 
-            _context.Articles.Remove(article);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok("Article updated successfully");
         }
 
-        private bool ArticleExists(long id)
+        [HttpPost]
+        public async Task<ActionResult<Article>> PostArticle(Article article)
         {
-            return _context.Articles.Any(e => e.Id == id);
+            try
+            {
+                var addedArticle = await _articleRepository.AddArticle(article);
+                return Ok(addedArticle);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "An error occured while attempting to create the article.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteArticle(long id)
+        {
+            try
+            {
+                var deleted = await _articleRepository.DeleteArticleAsync(id);
+                return Ok("Article deleted successfully");
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occured while attempting to delete the article.");
+            }
         }
     }
 }

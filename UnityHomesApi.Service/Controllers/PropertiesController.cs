@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using HomesApi.Data;
 using HomesApi.Data.Repositories;
+using HomesApi.Dtos;
 using HomesApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,49 +54,50 @@ public class PropertiesController : ControllerBase
         }
     }
 
-    // GET: api/Properties/5
     [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<Property>> GetProperty(long id)
     {
-        var @property = await _context.Properties.FindAsync(id);
+        var property = await _propertyRepository.GetPropertyByIdAsync(id);
 
-        if (@property == null)
+        if (property == null)
         {
             return NotFound();
         }
 
-        return @property;
+        return property;
     }
 
-    // PUT: api/Properties/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProperty(long id, Property @property)
+    public async Task<IActionResult> PutProperty(long id, PropertyUpdateDto propertyDto)
     {
-        if (id != @property.Id)
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!long.TryParse(userIdString, out long userId))
         {
-            return BadRequest();
+            return Unauthorized("Invalid user id");
         }
 
-        _context.Entry(@property).State = EntityState.Modified;
-
-        try
+        // make sure the property is owned by the current user
+        var existingProperty = await _propertyRepository.GetPropertyByIdAsync(id);
+        if (existingProperty == null)
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_propertyRepository.PropertyExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;d
-            }
+            return NotFound("Property not found");
         }
 
-        return NoContent();
+        if (existingProperty.UserId != userId)
+        {
+            return Unauthorized("You are not the owner of this property");
+        }
+
+        var success = await _propertyRepository.UpdatePropertyAsync(id, propertyDto);
+
+        if (!success)
+        {
+            return StatusCode(500, "An error occured while updating the property.");
+        }
+
+        return Ok("Property updated");
     }
 
     // POST: api/Properties

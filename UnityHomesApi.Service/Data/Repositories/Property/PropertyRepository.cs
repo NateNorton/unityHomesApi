@@ -1,3 +1,4 @@
+using HomesApi.Dtos;
 using HomesApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -62,9 +63,36 @@ public class PropertyRepository : IPropertyRepository
         return query;
     }
 
-    public Task<Property> GetPropertyByIdAsync(long id)
+    public async Task<Property?> GetPropertyByIdAsync(long propertyID)
     {
-        throw new NotImplementedException();
+        return await _context
+            .Properties
+            .Include(p => p.PropertyType)
+            .Select(
+                p =>
+                    new Property
+                    {
+                        Id = p.Id,
+                        Title = p.Title,
+                        Description = p.Description,
+                        FullDescription = p.FullDescription,
+                        IsAvailable = p.IsAvailable,
+                        NumberOfBedrooms = p.NumberOfBedrooms,
+                        HasGarden = p.HasGarden,
+                        SquareMeeterage = p.SquareMeeterage,
+                        MonthlyRent = p.MonthlyRent,
+                        Postcode = p.Postcode,
+                        City = p.City,
+                        PropertyNumber = p.PropertyNumber,
+                        Street = p.Street,
+                        PropertyTypeId = p.PropertyTypeId,
+                        PropertyType = p.PropertyType,
+                        DateAdded = p.DateAdded,
+                        DateUpdated = p.DateUpdated,
+                        UserId = p.UserId
+                    }
+            )
+            .FirstOrDefaultAsync(p => p.Id == propertyID);
     }
 
     public bool PropertyExists(long id)
@@ -72,8 +100,32 @@ public class PropertyRepository : IPropertyRepository
         return _context.Properties.Any(e => e.Id == id);
     }
 
-    public Task UpdatePropertyAsync(Property property)
+    public async Task<bool> UpdatePropertyAsync(long propertyId, PropertyUpdateDto updateDto)
     {
-        throw new NotImplementedException();
+        var property = await _context.Properties.FindAsync(propertyId);
+
+        if (property == null)
+        {
+            return false;
+        }
+
+        property.Title = updateDto.Title ?? property.Title;
+        property.Description = updateDto.Description ?? property.Description;
+        property.FullDescription = updateDto.FullDescription ?? property.FullDescription;
+        property.IsAvailable = updateDto.IsAvailable ?? property.IsAvailable;
+        property.NumberOfBedrooms = updateDto.NumberOfBedrooms ?? property.NumberOfBedrooms;
+        property.HasGarden = updateDto.HasGarden ?? property.HasGarden;
+        property.SquareMeeterage = updateDto.SquareMeeterage ?? property.SquareMeeterage;
+        property.MonthlyRent = updateDto.MonthlyRent ?? property.MonthlyRent;
+        property.Postcode = updateDto.Postcode ?? property.Postcode;
+        property.City = updateDto.City ?? property.City;
+        property.PropertyNumber = updateDto.PropertyNumber ?? property.PropertyNumber;
+        property.Street = updateDto.Street ?? property.Street;
+
+        _context.Properties.Update(property);
+
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 }

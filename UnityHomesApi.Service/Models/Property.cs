@@ -5,6 +5,7 @@ public class Property
     public long Id { get; set; }
     public string Title { get; set; } = "Default title";
     public string Description { get; set; } = "Default description";
+    public string FullDescription { get; set; } = "Default full description";
     public bool IsAvailable { get; set; } = false;
     public int NumberOfBedrooms { get; set; } = 1;
     public bool HasGarden { get; set; } = false;

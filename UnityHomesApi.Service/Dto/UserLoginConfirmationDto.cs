@@ -1,4 +1,4 @@
-namespace HomesApi.Dots;
+namespace HomesApi.Dtos;
 
 public partial class UserLoginConfirmationDto
 {

@@ -14,15 +14,31 @@ public class PropertyRepository : IPropertyRepository
         _context = context;
     }
 
-    public async Task<Property> AddProperty(Property property)
+    public async Task<Property> AddProperty(CreatePropertyDto createPropertyDto, long userID)
     {
-        if (property == null)
+        // create new Property using dto and user
+        var property = new Property
         {
-            throw new ArgumentNullException(nameof(property));
-        }
+            Title = createPropertyDto.Title,
+            Description = createPropertyDto.Description,
+            FullDescription = createPropertyDto.FullDescription,
+            IsAvailable = createPropertyDto.IsAvailable,
+            NumberOfBedrooms = createPropertyDto.NumberOfBedrooms,
+            HasGarden = createPropertyDto.HasGarden,
+            SquareMeeterage = createPropertyDto.SquareMeeterage,
+            MonthlyRent = createPropertyDto.MonthlyRent,
+            Postcode = createPropertyDto.Postcode,
+            City = createPropertyDto.City,
+            PropertyNumber = createPropertyDto.PropertyNumber,
+            Street = createPropertyDto.Street,
+            PropertyTypeId = createPropertyDto.PropertyTypeId,
+            UserId = userID
+        };
 
+        // add property to context
         _context.Properties.Add(property);
         await _context.SaveChangesAsync();
+        // if saved ok return the property
         return property;
     }
 

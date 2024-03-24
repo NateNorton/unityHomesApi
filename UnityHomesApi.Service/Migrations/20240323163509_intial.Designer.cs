@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace unityHomesApi.Migrations
 {
     [DbContext(typeof(HomesDbContext))]
-    [Migration("20240322142119_articlesChanges")]
-    partial class articlesChanges
+    [Migration("20240323163509_intial")]
+    partial class intial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -204,68 +204,6 @@ namespace unityHomesApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Properties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            City = "City 1",
-                            DateAdded = new DateTimeOffset(new DateTime(2024, 3, 22, 14, 21, 18, 907, DateTimeKind.Unspecified).AddTicks(3910), new TimeSpan(0, 0, 0, 0, 0)),
-                            DateUpdated = new DateTimeOffset(new DateTime(2024, 3, 22, 14, 21, 18, 907, DateTimeKind.Unspecified).AddTicks(3910), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "A nice little cottage in the countryside.",
-                            FullDescription = "Default full description",
-                            HasGarden = true,
-                            IsAvailable = true,
-                            MonthlyRent = 300,
-                            NumberOfBedrooms = 3,
-                            Postcode = "AB12 3CD",
-                            PropertyNumber = 1,
-                            PropertyTypeId = 4,
-                            SquareMeeterage = 100,
-                            Street = "Road 1",
-                            Title = "Cozy Cottage",
-                            UserId = 0L
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            City = "City 3",
-                            DateAdded = new DateTimeOffset(new DateTime(2024, 3, 22, 14, 21, 18, 907, DateTimeKind.Unspecified).AddTicks(3910), new TimeSpan(0, 0, 0, 0, 0)),
-                            DateUpdated = new DateTimeOffset(new DateTime(2024, 3, 22, 14, 21, 18, 907, DateTimeKind.Unspecified).AddTicks(3910), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Modern apartment in the city center.",
-                            FullDescription = "Default full description",
-                            HasGarden = false,
-                            IsAvailable = true,
-                            MonthlyRent = 200,
-                            NumberOfBedrooms = 1,
-                            Postcode = "BC34 5DE",
-                            PropertyNumber = 2,
-                            PropertyTypeId = 2,
-                            SquareMeeterage = 50,
-                            Street = "Road 2",
-                            Title = "Urban Apartment",
-                            UserId = 0L
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            City = "City 3",
-                            DateAdded = new DateTimeOffset(new DateTime(2024, 3, 22, 14, 21, 18, 907, DateTimeKind.Unspecified).AddTicks(3910), new TimeSpan(0, 0, 0, 0, 0)),
-                            DateUpdated = new DateTimeOffset(new DateTime(2024, 3, 22, 14, 21, 18, 907, DateTimeKind.Unspecified).AddTicks(3910), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "A nice little cottage in the countryside.",
-                            FullDescription = "Default full description",
-                            HasGarden = true,
-                            IsAvailable = false,
-                            MonthlyRent = 600,
-                            NumberOfBedrooms = 4,
-                            Postcode = "XY98 7ZW",
-                            PropertyNumber = 3,
-                            PropertyTypeId = 1,
-                            SquareMeeterage = 185,
-                            Street = "Road 3",
-                            Title = "Country House",
-                            UserId = 0L
-                        });
                 });
 
             modelBuilder.Entity("HomesApi.Models.PropertyFeature", b =>
@@ -319,58 +257,6 @@ namespace unityHomesApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PropertyTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "House"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Apartment"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Cottage"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Flat"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Mansion"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Studio"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Villa"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Bungalow"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Penthouse"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "Other"
-                        });
                 });
 
             modelBuilder.Entity("HomesApi.Models.Review", b =>

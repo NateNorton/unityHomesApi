@@ -97,7 +97,9 @@ public class PropertiesController : ControllerBase
 
     // POST: api/Properties
     [HttpPost]
-    public async Task<ActionResult<Property>> PostProperty([FromBody] Property property)
+    public async Task<ActionResult<Property>> PostProperty(
+        [FromBody] CreatePropertyDto createPropertyDto
+    )
     {
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -106,11 +108,9 @@ public class PropertiesController : ControllerBase
             return BadRequest("Invalid user id");
         }
 
-        property.UserId = userId;
-
         try
         {
-            var addedProperty = await _propertyRepository.AddProperty(property);
+            var addedProperty = await _propertyRepository.AddProperty(createPropertyDto, userId);
             return Ok(addedProperty);
         }
         catch (Exception)

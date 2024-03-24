@@ -23,7 +23,7 @@ namespace HomesApi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            SeedData.Initialize(modelBuilder);
+            //SeedData.Initialize(modelBuilder);
 
             modelBuilder.Entity<User>().HasIndex(u => u.UserName).IsUnique();
 

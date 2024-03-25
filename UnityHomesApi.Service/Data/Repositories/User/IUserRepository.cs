@@ -11,4 +11,9 @@ public interface IUserRepository
     long GetUserIdFromEmail(string email);
 
     string GetUsernameFromEmail(string email);
+    Task<List<Property>> GetUserFavouriteProperties(long userId);
+    Task AddFavouriteProperty(long userId, long propertyId);
+    Task RemoveFavouriteProperty(long userId, long propertyId);
+    Task<bool> UpdateUserDetails(long userId, UserUpdateDto userUpdateDto);
+    Task<UserDetailsDto> GetUserDetails(long userId);
 }

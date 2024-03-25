@@ -54,7 +54,7 @@ public class AuthHelper : IAuthHelper
     {
         Claim[] claims = new[]
         {
-            new Claim("userID", userId.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
             new Claim("email", email),
             new Claim("username", username)
         };

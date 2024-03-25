@@ -20,6 +20,7 @@ namespace HomesApi.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<ArticleTagLink> ArticleTagLinks { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<FavouriteProperty> FavouriteProperties { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

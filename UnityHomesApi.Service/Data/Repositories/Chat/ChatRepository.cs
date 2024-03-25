@@ -1,3 +1,4 @@
+using HomesApi.Dtos;
 using HomesApi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -91,5 +92,33 @@ public class ChatReposititory : IChatRepository
                     }
             )
             .ToListAsync();
+    }
+
+    public async Task<List<ChatParticipantDto>> GetChatParticipantsAsync(long userId)
+    {
+        var sentParticipants = await _context
+            .Messages
+            .Where(m => m.SenderId == userId)
+            .Select(m => new ChatParticipantDto { UserId = m.Id, Username = m.Receiver.UserName })
+            .Distinct()
+            .ToListAsync();
+
+        var receivedParticipants = await _context
+            .Messages
+            .Where(m => m.ReceiverId == userId)
+            .Select(
+                m => new ChatParticipantDto { UserId = m.SenderId, Username = m.Sender.UserName }
+            )
+            .Distinct()
+            .ToListAsync();
+
+        // Combine and remove duplicate participants
+        var allParticipants = sentParticipants
+            .Concat(receivedParticipants)
+            .GroupBy(p => p.UserId)
+            .Select(grp => grp.First())
+            .ToList();
+
+        return allParticipants;
     }
 }

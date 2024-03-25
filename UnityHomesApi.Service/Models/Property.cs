@@ -21,4 +21,5 @@ public class Property
     public DateTimeOffset DateUpdated { get; set; } = DateTimeOffset.UtcNow;
     public long UserId { get; set; }
     public User? User { get; set; }
+    public List<FavouriteProperty> FavouritedBy { get; set; } = new List<FavouriteProperty>();
 }

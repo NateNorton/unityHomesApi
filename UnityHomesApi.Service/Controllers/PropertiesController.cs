@@ -53,14 +53,21 @@ public class PropertiesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Property>> GetProperty(long id)
     {
-        var property = await _propertyRepository.GetPropertyByIdAsync(id);
-
-        if (property == null)
+        try
         {
-            return NotFound();
-        }
+            var property = await _propertyRepository.GetPropertyByIdAsync(id);
 
-        return property;
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(property);
+        }
+        catch (System.Exception)
+        {
+            return StatusCode(500, "An error occured while fetching the property.");
+        }
     }
 
     [HttpPut("{id}")]
@@ -95,7 +102,6 @@ public class PropertiesController : ControllerBase
         return Ok("Property updated");
     }
 
-    // POST: api/Properties
     [HttpPost]
     public async Task<ActionResult<Property>> PostProperty(
         [FromBody] CreatePropertyDto createPropertyDto

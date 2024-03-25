@@ -2,7 +2,6 @@ using System.Text;
 using HomesApi.Data;
 using HomesApi.Data.Repositories;
 using HomesApi.Helpers;
-using HomesApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -78,9 +77,9 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAllOrigins");
 
-app.UseAuthorization();
-
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 

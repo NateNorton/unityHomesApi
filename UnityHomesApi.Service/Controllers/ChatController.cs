@@ -145,4 +145,24 @@ public class ChatController : ControllerBase
 
         return Ok("Message deleted successfully");
     }
+
+    [HttpGet("participants")]
+    public async Task<ActionResult<List<ChatParticipantDto>>> GetChatParticipants()
+    {
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!long.TryParse(userIdString, out long userId))
+        {
+            return Unauthorized("Invalid user id");
+        }
+
+        var participants = await _chatRepository.GetChatParticipantsAsync(userId);
+
+        if (participants == null)
+        {
+            return NotFound("No chat participants found");
+        }
+
+        return Ok(participants);
+    }
 }

@@ -16,6 +16,9 @@ public class PropertyRepository : IPropertyRepository
 
     public async Task<Property> AddProperty(CreatePropertyDto createPropertyDto, long userID)
     {
+        // get property type from db
+        var propertyType = await _context.PropertyTypes.FindAsync(createPropertyDto.PropertyTypeId);
+        var user = await _context.Users.FindAsync(userID);
         // create new Property using dto and user
         var property = new Property
         {
@@ -32,7 +35,9 @@ public class PropertyRepository : IPropertyRepository
             PropertyNumber = createPropertyDto.PropertyNumber,
             Street = createPropertyDto.Street,
             PropertyTypeId = createPropertyDto.PropertyTypeId,
-            UserId = userID
+            PropertyType = propertyType,
+            UserId = userID,
+            User = user
         };
 
         // add property to context
